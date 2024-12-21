@@ -1,0 +1,9 @@
+{
+  "domain": "clothing_advisor",
+  "name": "Clothing Advisor",
+  "version": "1.0.0",
+  "documentation": "https://your-documentation-url",
+  "requirements": [],
+  "codeowners": ["@erinkozer11"],
+  "config_flow": true
+}
