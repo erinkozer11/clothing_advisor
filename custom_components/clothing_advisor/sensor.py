@@ -1,9 +1,8 @@
-from config.custom_components.clothing_advisor import DOMAIN
-from config.custom_components.clothing_advisor.helpers import (
+from . import DOMAIN
+from .helpers import (
     get_clothing_for_temperature,
 )
 from homeassistant.components.sensor import SensorEntity
-# from . import DOMAIN, get_temperature_info
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -39,7 +38,8 @@ class TOGSensor(SensorEntity):
         """Update the TOG based on the temperature."""
         temperature = self.hass.states.get(self._temperature_sensor).state
         if temperature:
-            self._state = get_clothing_for_temperature(float(temperature), "tog")
+            self._state = get_clothing_for_temperature(
+                float(temperature), "tog")
 
 
 class PyjamaSensor(SensorEntity):
@@ -61,7 +61,8 @@ class PyjamaSensor(SensorEntity):
         """Update the wear items based on the temperature."""
         temperature = self.hass.states.get(self._temperature_sensor).state
         if temperature:
-            self._state = get_clothing_for_temperature(float(temperature), "pyjamas")
+            self._state = get_clothing_for_temperature(
+                float(temperature), "pyjamas")
 
 
 class TopSensor(SensorEntity):
@@ -83,7 +84,8 @@ class TopSensor(SensorEntity):
         """Update the wear items based on the temperature."""
         temperature = self.hass.states.get(self._temperature_sensor).state
         if temperature:
-            self._state = get_clothing_for_temperature(float(temperature), "top")
+            self._state = get_clothing_for_temperature(
+                float(temperature), "top")
 
 
 class BodysuitSensor(SensorEntity):
@@ -105,4 +107,5 @@ class BodysuitSensor(SensorEntity):
         """Update the wear items based on the temperature."""
         temperature = self.hass.states.get(self._temperature_sensor).state
         if temperature:
-            self._state = get_clothing_for_temperature(float(temperature), "bodysuit")
+            self._state = get_clothing_for_temperature(
+                float(temperature), "bodysuit")
