@@ -1,0 +1,7 @@
+{
+  "name": "Clothing Advisor",
+  "content_in_root": false,
+  "domains": ["clothing_advisor"],
+  "iot_class": "local_polling",
+  "render_readme": true
+}
