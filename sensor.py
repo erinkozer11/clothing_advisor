@@ -1,38 +1,108 @@
-"""Platform for sensor integration."""
-from __future__ import annotations
-
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity,
-    SensorStateClass,
+from config.custom_components.clothing_advisor import DOMAIN
+from config.custom_components.clothing_advisor.helpers import (
+    get_clothing_for_temperature,
 )
-from homeassistant.const import UnitOfTemperature
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+from homeassistant.components.sensor import SensorEntity
+# from . import DOMAIN, get_temperature_info
 
 
-def setup_platform(
-    hass: HomeAssistant,
-    config: ConfigType,
-    add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None
-) -> None:
-    """Set up the sensor platform."""
-    add_entities([ExampleSensor()])
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up sensors from config entry."""
+    temperature_sensor = hass.data[DOMAIN].get("entity_id")
+    async_add_entities(
+        [
+            TOGSensor(hass, temperature_sensor),
+            PyjamaSensor(temperature_sensor),
+            BodysuitSensor(temperature_sensor),
+            TopSensor(temperature_sensor),
+        ]
+    )
 
 
-class ExampleSensor(SensorEntity):
-    """Representation of a Sensor."""
+class TOGSensor(SensorEntity):
+    """Sensor for TOG."""
 
-    _attr_name = "Example Temperature"
-    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-    _attr_device_class = SensorDeviceClass.TEMPERATURE
-    _attr_state_class = SensorStateClass.MEASUREMENT
+    def __init__(self, hass, temperature_sensor):
+        self.hass = hass
+        self._temperature_sensor = temperature_sensor
+        self._state = None
 
-    def update(self) -> None:
-        """Fetch new state data for the sensor.
+    @property
+    def name(self):
+        return "TOG Sensor"
 
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        self._attr_native_value = 23
+    @property
+    def state(self):
+        return self._state
+
+    async def async_update(self):
+        """Update the TOG based on the temperature."""
+        temperature = self.hass.states.get(self._temperature_sensor).state
+        if temperature:
+            self._state = get_clothing_for_temperature(float(temperature), "tog")
+
+
+class PyjamaSensor(SensorEntity):
+    """Sensor for wear items."""
+
+    def __init__(self, temperature_sensor):
+        self._temperature_sensor = temperature_sensor
+        self._state = None
+
+    @property
+    def name(self):
+        return "Pyjama Sensor"
+
+    @property
+    def state(self):
+        return self._state
+
+    async def async_update(self):
+        """Update the wear items based on the temperature."""
+        temperature = self.hass.states.get(self._temperature_sensor).state
+        if temperature:
+            self._state = get_clothing_for_temperature(float(temperature), "pyjamas")
+
+
+class TopSensor(SensorEntity):
+    """Sensor for wear items."""
+
+    def __init__(self, temperature_sensor):
+        self._temperature_sensor = temperature_sensor
+        self._state = None
+
+    @property
+    def name(self):
+        return "Top Sensor"
+
+    @property
+    def state(self):
+        return self._state
+
+    async def async_update(self):
+        """Update the wear items based on the temperature."""
+        temperature = self.hass.states.get(self._temperature_sensor).state
+        if temperature:
+            self._state = get_clothing_for_temperature(float(temperature), "top")
+
+
+class BodysuitSensor(SensorEntity):
+    """Sensor for wear items."""
+
+    def __init__(self, temperature_sensor):
+        self._temperature_sensor = temperature_sensor
+        self._state = None
+
+    @property
+    def name(self):
+        return "Bodysuit Sensor"
+
+    @property
+    def state(self):
+        return self._state
+
+    async def async_update(self):
+        """Update the wear items based on the temperature."""
+        temperature = self.hass.states.get(self._temperature_sensor).state
+        if temperature:
+            self._state = get_clothing_for_temperature(float(temperature), "bodysuit")
